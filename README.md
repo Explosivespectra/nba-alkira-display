@@ -8,5 +8,5 @@ Just do a typical "yarn start" to get the application up and running
 IF the application is running on port 3000 and Cypress is available on the device being used, navigate to the cypress folder in the repo and type "yarn run express run" to run the tests in the cypress/integration folder
 
 ## Main libraries used
-React-Router
-Material-UI
+### React-Router
+### Material-UI

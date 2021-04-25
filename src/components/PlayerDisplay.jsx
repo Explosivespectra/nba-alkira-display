@@ -93,7 +93,7 @@ const PlayerDisplay = () => {
           maxWidth: "100%",
           overflowX: "hidden",
           overflowY: "auto",
-          minHeight: "15rem",
+          minHeight: "80%",
         }}
       >
         <div style={{ maxWidth: mw, margin: "auto" }}>

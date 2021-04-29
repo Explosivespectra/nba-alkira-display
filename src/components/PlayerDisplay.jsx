@@ -41,6 +41,9 @@ const PlayerDisplay = () => {
           setLoading(false);
         }
       );
+    return () => {
+      console.log("hello");
+    };
   }, [location]);
   if (loading) {
     //While loading

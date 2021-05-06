@@ -17,6 +17,19 @@ const SearchBar = () => {
   const history = useHistory(); //history stack
   const [content, setContent] = useState(searchParam.get("search") || ""); //set state to initial URI value of search
 
+  const makeThrottle = () => {
+    let timer;
+    return (input) => {
+      if (!timer) {
+        handleSearch(input);
+      }
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        timer = undefined;
+      }, 500);
+    };
+  };
+
   const makeDebounce = () => {
     let timer;
     return (input) => {
@@ -33,6 +46,8 @@ const SearchBar = () => {
 
   const debounce = useCallback(makeDebounce(), []);
 
+  const throttle = useCallback(makeThrottle(), []);
+
   useEffect(() => {
     //Whenever location is updated...
     const searchParam = new URLSearchParams(location.search);
@@ -40,10 +55,10 @@ const SearchBar = () => {
   }, [location, setContent]);
 
   //function to handle submission of input
-  const handleSearch = () => {
+  const handleSearch = (input) => {
     history.push(
       `${location.pathname}${
-        content !== "" ? `?search=${encodeURIComponent(content)}` : ""
+        input !== "" ? `?search=${encodeURIComponent(input)}` : ""
       }`
     ); //push new URI onto stack based on user input
   };
@@ -55,7 +70,7 @@ const SearchBar = () => {
         <IconButton
           onClick={() => {
             //button press listener
-            handleSearch();
+            throttle(content);
           }}
         >
           <Search />
@@ -70,7 +85,7 @@ const SearchBar = () => {
         placeholder="Search"
         onKeyDown={(event) => {
           //"enter" key listener
-          if (event.key === "Enter") handleSearch();
+          if (event.key === "Enter") throttle(content);
         }}
         endAdornment={<SubmitButton />}
         value={content} //value in searchbar is equivalent to state

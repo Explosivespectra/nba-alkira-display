@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import {
   FormControl,
@@ -16,6 +16,22 @@ const SearchBar = () => {
   const searchParam = new URLSearchParams(location.search); //convert to proper param dictionary
   const history = useHistory(); //history stack
   const [content, setContent] = useState(searchParam.get("search") || ""); //set state to initial URI value of search
+
+  const makeDebounce = () => {
+    let timer;
+    return (input) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        history.push(
+          `${location.pathname}${
+            input !== "" ? `?search=${encodeURIComponent(input)}` : ""
+          }`
+        );
+      }, 500);
+    };
+  };
+
+  const debounce = useCallback(makeDebounce(), []);
 
   useEffect(() => {
     //Whenever location is updated...
@@ -60,6 +76,7 @@ const SearchBar = () => {
         value={content} //value in searchbar is equivalent to state
         onChange={(event) => {
           setContent(event.target.value); //update current state to value inputted
+          debounce(event.target.value);
         }}
       />
     </FormControl>

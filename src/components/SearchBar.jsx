@@ -19,9 +19,9 @@ const SearchBar = () => {
 
   const makeThrottle = () => {
     let timer;
-    return (input) => {
+    return (input, history, location) => {
       if (!timer) {
-        handleSearch(input);
+        handleSearch(input, history, location);
       }
       clearTimeout(timer);
       timer = setTimeout(() => {
@@ -32,14 +32,10 @@ const SearchBar = () => {
 
   const makeDebounce = () => {
     let timer;
-    return (input) => {
+    return (input, history, location) => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        history.push(
-          `${location.pathname}${
-            input !== "" ? `?search=${encodeURIComponent(input)}` : ""
-          }`
-        );
+        handleSearch(input, history, location);
       }, 500);
     };
   };
@@ -55,7 +51,7 @@ const SearchBar = () => {
   }, [location, setContent]);
 
   //function to handle submission of input
-  const handleSearch = (input) => {
+  const handleSearch = (input, history, location) => {
     history.push(
       `${location.pathname}${
         input !== "" ? `?search=${encodeURIComponent(input)}` : ""
@@ -70,7 +66,7 @@ const SearchBar = () => {
         <IconButton
           onClick={() => {
             //button press listener
-            throttle(content);
+            throttle(content, history, location);
           }}
         >
           <Search />
@@ -85,13 +81,13 @@ const SearchBar = () => {
         placeholder="Search"
         onKeyDown={(event) => {
           //"enter" key listener
-          if (event.key === "Enter") throttle(content);
+          if (event.key === "Enter") throttle(content, history, location);
         }}
         endAdornment={<SubmitButton />}
         value={content} //value in searchbar is equivalent to state
         onChange={(event) => {
           setContent(event.target.value); //update current state to value inputted
-          debounce(event.target.value);
+          debounce(event.target.value, history, location);
         }}
       />
     </FormControl>

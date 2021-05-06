@@ -35,7 +35,7 @@ const SearchBar = () => {
     return (input, history, location) => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        handleSearch(input, history, location);
+        throttle(input, history, location);
       }, 500);
     };
   };
